@@ -9,7 +9,6 @@ class CarSerializer(serializers.ModelSerializer):
         fields = (
             'id', 'brand', 'year', 'price', 'body_type', 'seats', 'capacity', 'created_at', 'updated_at')
 
-
 # class CarListSerializer(serializers.ModelSerializer):
 #     class Meta:
 #         model = CarModel
