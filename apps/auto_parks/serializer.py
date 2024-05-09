@@ -10,3 +10,9 @@ class AutoParksSerializer(serializers.ModelSerializer):
     class Meta:
         model = AutoParksModel
         fields = ('id', 'name', 'created_at', 'updated_at', 'cars')
+
+
+class AutoParkWithOutCarsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AutoParksModel
+        fields = ('id', 'name')
