@@ -1,75 +1,41 @@
-from django.db.models import QuerySet
-from django.http import QueryDict
 
-from rest_framework.exceptions import ValidationError
+from django_filters import rest_framework as filters
 
-from apps.cars.models import CarModel
 from apps.cars.serializers import CarSerializer
 
 
-def car_filter(query: QueryDict) -> QuerySet:
-    qs = CarModel.objects.all()
-    for key, value in query.items():
-        match key:
-            case 'year_gt':
-                qs = qs.filter(year__gt=value)
-            case 'year_gte':
-                qs = qs.filter(year__gte=value)
-            case 'year_lt':
-                qs = qs.filter(year__lt=value)
-            case 'year_lte':
-                qs = qs.filter(year__lte=value)
+class CarFilter(filters.FilterSet):
+    fields = CarSerializer.Meta.fields
+    fields = [*fields, *[f'-{field}' for field in fields]]
 
-            case 'price_gt':
-                qs = qs.filter(price__gt=value)
-            case 'price_gte':
-                qs = qs.filter(price__gte=value)
-            case 'price_lt':
-                qs = qs.filter(price__lt=value)
-            case 'price_lte':
-                qs = qs.filter(price__lte=value)
+    year_gt = filters.NumberFilter('year', 'gt')
+    year_gte = filters.NumberFilter('year', 'gte')
+    year_lt = filters.NumberFilter('year', 'lt')
+    year_lte = filters.NumberFilter('year', 'lte')
 
-            case 'seats_gt':
-                qs = qs.filter(seats__gt=value)
-            case 'seats_gte':
-                qs = qs.filter(seats__gte=value)
-            case 'seats_lt':
-                qs = qs.filter(seats__lt=value)
-            case 'seats_lte':
-                qs = qs.filter(seats__lte=value)
+    price_gt = filters.NumberFilter('price', 'gt')
+    price_gte = filters.NumberFilter('price', 'gte')
+    price_lt = filters.NumberFilter('price', 'lte')
+    price_lte = filters.NumberFilter('price', 'lte')
 
-            case 'capacity_gt':
-                qs = qs.filter(capacity__gt=value)
-            case 'capacity_gte':
-                qs = qs.filter(capacity__gte=value)
-            case 'capacity_lt':
-                qs = qs.filter(capacity__lt=value)
-            case 'capacity_lte':
-                qs = qs.filter(capacity__lte=value)
+    seats_gt = filters.NumberFilter('seats', 'gt')
+    seats_gte = filters.NumberFilter('seats', 'gte')
+    seats_lt = filters.NumberFilter('seats', 'lt')
+    seats_lte = filters.NumberFilter('seats', 'lte')
 
-            case 'brand_starts':
-                qs = qs.filter(brand__istartswith=value)
-            case 'brand_ends':
-                qs = qs.filter(brand__iendswith=value)
-            case 'brand_contains':
-                qs = qs.filter(brand__icontains=value)
+    capacity_gt = filters.NumberFilter('capacity', 'gt')
+    capacity_gte = filters.NumberFilter('capacity', 'gte')
+    capacity_lt = filters.NumberFilter('capacity', 'lte')
+    capacity_lte = filters.NumberFilter('capacity', 'lte')
 
-            case 'body_type_starts':
-                qs = qs.filter(body_type__istartswith=value)
-            case 'body_type_ends':
-                qs = qs.filter(body_type__iendswith=value)
-            case 'body_type_contains':
-                qs = qs.filter(body_type__icontains=value)
+    brand_starts = filters.CharFilter('brand', 'istartswith')
+    brand_ends = filters.CharFilter('brand', 'iendswith')
+    brand_contains = filters.CharFilter('brand', 'icontains')
 
-            case 'order':
-                fields = CarSerializer.Meta.fields
-                fields = [*fields, *[f'-{field}' for field in fields]]
-                if value not in fields:
-                    raise ValidationError({'details': f'{value} not in {fields}'})
+    body_type_starts = filters.CharFilter('body_type', 'istartswith')
+    body_type_ends = filters.CharFilter('body_type', 'iendswith')
+    body_type_contains = filters.CharFilter('body_type', 'icontains')
 
-                qs = qs.order_by(value)
-
-            case _:
-                raise ValidationError(f"{key} is not a valid value")
-
-    return qs
+    order = filters.OrderingFilter(
+        fields = ([*fields])
+    )
