@@ -1,10 +1,24 @@
 from rest_framework import status
-from rest_framework.generics import GenericAPIView, ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.generics import CreateAPIView, GenericAPIView, ListCreateAPIView, RetrieveUpdateDestroyAPIView, \
+    ListAPIView
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from apps.auto_parks.serializer import AutoParksSerializer
-from apps.users.models import UserModel
+from django.contrib.auth import get_user_model
 from apps.users.serializers import UserSerializer
+
+UserModel = get_user_model()
+
+
+class UserCreateView(CreateAPIView):
+    serializer_class = UserSerializer
+
+
+class UserListView(ListAPIView):
+    serializer_class = UserSerializer
+    queryset = UserModel.objects.all()
+    permission_classes = (IsAuthenticated,)
 
 
 class UsersListCreateView(ListCreateAPIView):

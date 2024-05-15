@@ -9,6 +9,7 @@ from core.models import BaseModel
 
 from apps.auto_parks.models import AutoParksModel
 from apps.cars.choices import CarChoices
+from apps.cars.managers import CarManager
 
 
 class CarModel(BaseModel):
@@ -28,4 +29,6 @@ class CarModel(BaseModel):
     body_type = models.CharField(max_length=50, choices=[*CarChoices.choices])
     capacity = models.FloatField(validators=[V.MinValueValidator(0.4), V.MaxValueValidator(5)])
     auto_park = models.ForeignKey(AutoParksModel, on_delete=models.CASCADE, related_name='cars')
+
+    objects = CarManager()
 
