@@ -1,12 +1,12 @@
 from rest_framework import status
-from rest_framework.generics import CreateAPIView, GenericAPIView, ListCreateAPIView, RetrieveUpdateDestroyAPIView, \
-    ListAPIView
-from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
+from rest_framework.generics import GenericAPIView, ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 
 from apps.auto_parks.serializer import AutoParksSerializer
 from django.contrib.auth import get_user_model
 from apps.users.serializers import UserSerializer
+from core.premissions import IsAuthenticatedForGetOrWriteOnly
 
 UserModel = get_user_model()
 
@@ -14,11 +14,7 @@ UserModel = get_user_model()
 class UsersListCreateView(ListCreateAPIView):
     queryset = UserModel.objects.all()
     serializer_class = UserSerializer
-
-    def get_permissions(self):
-        if self.request.method == 'GET':
-            return (IsAuthenticated(),)
-        return (AllowAny(),)
+    permission_classes = (IsAuthenticatedForGetOrWriteOnly,)
 
 
 class UserBlockView(GenericAPIView):

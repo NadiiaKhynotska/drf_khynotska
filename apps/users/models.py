@@ -29,3 +29,4 @@ class ProfileModel(BaseModel):
     surname = models.CharField(max_length=50)
     age = models.IntegerField()
     user = models.OneToOneField(UserModel, on_delete=models.CASCADE, related_name='profile')
+    avatar = models.ImageField(upload_to='')
