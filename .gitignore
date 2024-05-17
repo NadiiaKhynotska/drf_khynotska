@@ -1,6 +1,5 @@
 .idea
 .venv
 mysql
-storage/
-
+**/storage/*
 
