@@ -2,5 +2,6 @@
 .venv
 mysql
 storage
-
+storage/cars
+storage/users
 
