@@ -7,7 +7,8 @@ class CarSerializer(serializers.ModelSerializer):
     class Meta:
         model = CarModel
         fields = (
-            'id', 'brand', 'year', 'price', 'body_type', 'seats', 'capacity','auto_park', 'created_at', 'updated_at')
+            'id', 'brand', 'year', 'price', 'body_type', 'seats', 'capacity', 'auto_park', 'image', 'created_at',
+            'updated_at')
 
     def validate(self, attrs):
         year = attrs['year']
@@ -15,3 +16,10 @@ class CarSerializer(serializers.ModelSerializer):
         if year == price:
             raise serializers.ValidationError({'details': f'year - {year} must not be the same as price - {price}'})
         return attrs
+
+
+class CarAddImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CarModel
+        fields = ('image',)
+        extra_kwargs = {'image': {'required': True}}
