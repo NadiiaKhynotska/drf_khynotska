@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from django.core.files import File
 
 from .models import CarModel
 
@@ -23,3 +24,9 @@ class CarAddImageSerializer(serializers.ModelSerializer):
         model = CarModel
         fields = ('image',)
         extra_kwargs = {'image': {'required': True}}
+
+    def validate_image(self, image: File):
+        max_size = 100 * 1024
+        if image.size > max_size:
+            raise serializers.ValidationError(f'Max size is 100Kb')
+        return image
