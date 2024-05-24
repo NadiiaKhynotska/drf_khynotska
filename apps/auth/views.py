@@ -1,3 +1,19 @@
-from django.shortcuts import render
+from rest_framework import status
+from rest_framework.generics import GenericAPIView
+from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
 
-# Create your views here.
+from apps.users.serializers import UserSerializer
+from core.services.jwt_service import JWTService, ActivateToken
+
+
+class ActivateUserView(GenericAPIView):
+    permission_classes = (AllowAny,)
+    def post(self, *args, **kwargs):
+        token = kwargs['token']
+        user = JWTService.check_token(token, ActivateToken)
+        user.is_active = True
+        user.save()
+        serializer = UserSerializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+        

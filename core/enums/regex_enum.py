@@ -19,6 +19,15 @@ class RegexEnum(Enum):
 
         ]
     )
+    BRAND_NAME = (
+        '^(?!.*\s)[A-Z][a-z]{1,49}(?<!\s)$',
+        [
+            'First letter of brand must be only uppercase letters.',
+            'Not aloud spaces at the beginning or end of the brand.',
+            'Second letter of brand must be only lowercase letters.',
+            'Length of brand must be between 3 and 50 characters.',
+        ]
+    )
 
     def __init__(self, pattern: str, msg: str | list[str]):
         self.pattern = pattern

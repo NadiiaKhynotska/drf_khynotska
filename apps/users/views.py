@@ -1,10 +1,14 @@
+import os
+
 from rest_framework import status
 from rest_framework.generics import GenericAPIView, ListCreateAPIView, RetrieveUpdateDestroyAPIView, UpdateAPIView
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from rest_framework.response import Response
 
 from apps.auto_parks.serializer import AutoParksSerializer
 from django.contrib.auth import get_user_model
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import get_template
 
 from apps.users.models import ProfileModel
 from apps.users.serializers import UserSerializer, ProfileAvatarSerializer
@@ -16,7 +20,7 @@ UserModel = get_user_model()
 class UsersListCreateView(ListCreateAPIView):
     queryset = UserModel.objects.all()
     serializer_class = UserSerializer
-    permission_classes = (IsAuthenticatedForGetOrWriteOnly,)
+    permission_classes = (AllowAny,)
 
 
 class UserAddAvatarView(UpdateAPIView, ):
@@ -28,7 +32,7 @@ class UserAddAvatarView(UpdateAPIView, ):
         return self.request.user.profile
 
     def perform_update(self, serializer):
-        profile:ProfileModel = self.get_object()
+        profile: ProfileModel = self.get_object()
         profile.avatar.delete()
         super().perform_update(serializer)
 
@@ -81,3 +85,16 @@ class UsersAddAutoParkView(GenericAPIView):
         serializer.save(user=user)
         user_serializer = UserSerializer(user)
         return Response(user_serializer.data, status.HTTP_201_CREATED)
+
+
+class AddEmailView(GenericAPIView):
+    permission_classes = (AllowAny, )
+
+    def get(self, *args, **kwargs):
+        template = get_template('test_email.html')
+        html_content = template.render({'name': 'Nadiia'})
+        msg = EmailMultiAlternatives('First email', from_email=os.environ.get('EMAIL_HOST'),
+                                     to=['nadinyman@gmail.com'])
+        msg.attach_alternative(html_content, 'text/html')
+        msg.send()
+        return Response(status=status.HTTP_200_OK)
