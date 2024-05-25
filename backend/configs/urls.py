@@ -19,10 +19,10 @@ from django.conf.urls.static import static
 from django.conf import settings
 
 urlpatterns = [
-    path('cars', include('apps.cars.urls')),
-    path('auto_parks', include('apps.auto_parks.urls')),
-    path('users', include('apps.users.urls')),
-    path('auth', include('apps.auth.urls')),
+    path('api/cars', include('apps.cars.urls')),
+    path('api/auto_parks', include('apps.auto_parks.urls')),
+    path('api/users', include('apps.users.urls')),
+    path('api/auth', include('apps.auth.urls')),
 
 
 ]
