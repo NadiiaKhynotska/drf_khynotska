@@ -1,4 +1,3 @@
-
 from typing import Type
 
 from rest_framework_simplejwt.tokens import BlacklistMixin, Token
@@ -19,6 +18,11 @@ class ActionToken(BlacklistMixin, Token):
 class ActivateToken(ActionToken):
     token_type = ActionTokenEnum.ACTIVATE.token_type
     lifetime = ActionTokenEnum.ACTIVATE.lifetime
+
+
+class RecoverToken(ActionToken):
+    token_type = ActionTokenEnum.RECOVERY.token_type
+    lifetime = ActionTokenEnum.RECOVERY.lifetime
 
 
 class JWTService:
