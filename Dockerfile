@@ -13,6 +13,8 @@ RUN mkdir /app
 WORKDIR /app
 
 RUN pip install --upgrade pip
+RUN apk add libffi-dev
+
 
 COPY requirements.txt /tmp
 

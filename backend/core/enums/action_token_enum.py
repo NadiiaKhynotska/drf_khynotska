@@ -11,6 +11,10 @@ class ActionTokenEnum(Enum):
         'recovery',
         timedelta(minutes=15)
     )
+    SOCKET = (
+        'socket',
+        timedelta(seconds=30)
+    )
 
     def __init__(self, token_type, lifetime):
         self.token_type = token_type

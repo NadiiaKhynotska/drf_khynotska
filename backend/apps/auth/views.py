@@ -1,12 +1,12 @@
 from rest_framework import status
 from rest_framework.generics import GenericAPIView, get_object_or_404
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from django.contrib.auth import get_user_model
 
 from apps.auth.serializers import EmailSerializer, PasswordSerializer
 from apps.users.serializers import UserSerializer
-from core.services.jwt_service import JWTService, ActivateToken, RecoverToken
+from core.services.jwt_service import JWTService, ActivateToken, RecoverToken, SocketToken
 from core.services.email_service import EmailService
 
 UserModel = get_user_model()
@@ -50,3 +50,11 @@ class RecoveryPasswordView(GenericAPIView):
         user.set_password(serializer.data['password'])
         user.save()
         return Response({'detail': 'Your password is changed'}, status.HTTP_200_OK)
+
+
+class SocketView(GenericAPIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, *args, **kwargs):
+        token = JWTService.create_token(self.request.user, SocketToken)
+        return Response({'token': str(token)}, status.HTTP_200_OK)
