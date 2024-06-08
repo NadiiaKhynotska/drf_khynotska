@@ -40,6 +40,7 @@ class UserAddAvatarView(UpdateAPIView, ):
 class UserBlockView(GenericAPIView):
     # queryset = UserModel.objects.all()
     permission_classes = (IsAdminUser,)
+    serializer_class = UserSerializer
 
     def get_queryset(self):
         return UserModel.objects.exclude(id=self.request.user.id)
@@ -56,6 +57,7 @@ class UserBlockView(GenericAPIView):
 class UserUnBlockView(GenericAPIView):
     # queryset = UserModel.objects.all()
     permission_classes = (IsAuthenticated,)
+    serializer_class = UserSerializer
 
     def get_queryset(self):
         return UserModel.objects.exclude(id=self.request.user.id)
@@ -76,6 +78,7 @@ class UsersRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
 
 class UsersAddAutoParkView(GenericAPIView):
     queryset = UserModel.objects.all()
+    serializer_class = UserSerializer
 
     def post(self, *args, **kwargs):
         user = self.get_object()
@@ -89,6 +92,9 @@ class UsersAddAutoParkView(GenericAPIView):
 
 class AddEmailView(GenericAPIView):
     permission_classes = (AllowAny, )
+
+    def get_serializer(self, *args, **kwargs):
+        pass
 
     def get(self, *args, **kwargs):
         template = get_template('test_email.html')

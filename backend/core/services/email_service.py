@@ -1,12 +1,14 @@
 import os
 
-
 from django.template.loader import get_template
 from django.core.mail import EmailMultiAlternatives
 from core.dataclasses.user_dataclass import UserDataClass
 from core.services.jwt_service import JWTService, ActivateToken, RecoverToken
+from django.contrib.auth import get_user_model
 
 from configs.celery import app
+
+UserModel = get_user_model()
 
 
 class EmailService:
@@ -40,3 +42,10 @@ class EmailService:
             {'name': user.profile.name, 'url': url},
             'Recover your password'
         )
+
+    @staticmethod
+    @app.task
+    def spam():
+        for user in UserModel.objects.all():
+            user: UserDataClass = user
+            EmailService.__send_email(user.email, 'spam.html', {'name': user.profile.name}, 'Spam')
